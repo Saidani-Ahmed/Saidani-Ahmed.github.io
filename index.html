@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ahmed Saidani — Développeur Systèmes Embarqués & IoT</title>
+<meta name="description" content="Portfolio d'Ahmed Saidani, développeur systèmes embarqués et IoT : firmware C/C++ pour microcontrôleurs (ESP32, Arduino), MQTT, intégration capteurs-backend. Certifié NVIDIA DLI (NLP / Transformers).">
+<meta name="keywords" content="systèmes embarqués, embedded systems, IoT, firmware, C, C++, ESP32, Arduino, MQTT, Node-RED, FastAPI, NVIDIA DLI, Transformers, NLP">
+<meta name="author" content="Ahmed Saidani">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Ahmed Saidani — Systèmes Embarqués & IoT">
+<meta property="og:description" content="Firmware C/C++ pour microcontrôleurs, IoT de bout en bout, certifié NVIDIA DLI.">
+<meta name="theme-color" content="#0b1f33">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Ahmed Saidani",
+  "jobTitle": "Développeur Systèmes Embarqués & IoT",
+  "email": "mailto:saidani.ahmedsaaa@gmail.com",
+  "address": {"@type": "PostalAddress", "addressLocality": "Tunis", "addressCountry": "TN"},
+  "alumniOf": [{"@type": "CollegeOrUniversity", "name": "ISTIC – Université de Carthage"}],
+  "sameAs": ["https://github.com/Saidani-Ahmed", "https://www.linkedin.com/in/saidani-ahmed-47326326b"],
+  "knowsAbout": ["Embedded systems", "IoT", "Firmware", "C", "C++", "ESP32", "Arduino", "MQTT", "Natural Language Processing"],
+  "hasCredential": [
+    {"@type": "EducationalOccupationalCredential", "name": "NVIDIA DLI — Building Transformer-Based Natural Language Processing Applications", "dateCreated": "2026-10-03"},
+    {"@type": "EducationalOccupationalCredential", "name": "Certified SOLIDWORKS Associate (CSWA)", "dateCreated": "2026"}
+  ]
+}
+</script>
+<style>
+  :root{
+    --ink:#0b1f33; --ink-2:#3c4f63; --muted:#6b7c8f; --line:#dde4ec;
+    --bg:#f6f8fb; --card:#ffffff; --accent:#0b5394; --accent-2:#76b900; --chip:#eaf1f8;
+    --mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--sans);color:var(--ink);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+  html[data-lang="fr"] [lang="en"]:not(html){display:none}
+  html[data-lang="en"] [lang="fr"]:not(html){display:none}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+
+  /* nav */
+  header.nav{position:sticky;top:0;z-index:10;background:rgba(246,248,251,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  header.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:58px;gap:16px}
+  .brand{font-family:var(--mono);font-weight:700;color:var(--ink);letter-spacing:-.02em}
+  .brand span{color:var(--accent)}
+  nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;font-size:.92rem}
+  nav a{color:var(--ink-2)}
+  .lang{font-family:var(--mono);font-size:.8rem;border:1px solid var(--line);background:var(--card);border-radius:6px;padding:5px 10px;cursor:pointer;color:var(--ink)}
+  @media (max-width:720px){nav ul{display:none}}
+
+  /* hero */
+  .hero{padding:84px 0 64px;position:relative;overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+      background-size:32px 32px;opacity:.45;mask-image:radial-gradient(ellipse at 80% 20%,#000 0%,transparent 60%);pointer-events:none}
+  .tag{font-family:var(--mono);font-size:.82rem;color:var(--accent);background:var(--chip);display:inline-block;padding:4px 10px;border-radius:4px}
+  h1{font-size:clamp(2.3rem,5vw,3.6rem);line-height:1.08;margin:18px 0 12px;letter-spacing:-.03em}
+  .lead{font-size:1.15rem;color:var(--ink-2);max-width:640px;margin:0 0 28px}
+  .cta{display:flex;flex-wrap:wrap;gap:12px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:8px;font-weight:600;font-size:.95rem;border:1px solid var(--ink)}
+  .btn.primary{background:var(--ink);color:#fff}
+  .btn.ghost{color:var(--ink);background:transparent}
+  .btn:hover{text-decoration:none;transform:translateY(-1px)}
+  .stats{display:flex;flex-wrap:wrap;gap:32px;margin-top:44px;font-size:.9rem;color:var(--muted)}
+  .stats b{display:block;font-size:1.35rem;color:var(--ink);font-family:var(--mono)}
+
+  /* sections */
+  section{padding:64px 0;border-top:1px solid var(--line)}
+  .kicker{font-family:var(--mono);font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  h2{font-size:1.8rem;margin:6px 0 28px;letter-spacing:-.02em}
+  .grid{display:grid;gap:18px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px}
+  .card h3{margin:0 0 6px;font-size:1.08rem}
+  .card p{margin:0;color:var(--ink-2);font-size:.95rem}
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .chip{font-family:var(--mono);font-size:.74rem;background:var(--chip);color:var(--accent);padding:3px 8px;border-radius:4px}
+  .featured{border-left:4px solid var(--accent);grid-column:1/-1}
+  .tl ul li{padding:2px 0}
+  @media (max-width:640px){.stats{display:grid;grid-template-columns:1fr 1fr;gap:20px}}
+
+  /* timeline */
+  .tl{list-style:none;margin:0;padding:0}
+  .tl > li{display:grid;grid-template-columns:170px 1fr;gap:20px;padding:20px 0;border-bottom:1px dashed var(--line)}
+  .tl > li:last-child{border-bottom:0}
+  .when{font-family:var(--mono);font-size:.84rem;color:var(--muted)}
+  .tl h3{margin:0;font-size:1.05rem}
+  .tl .org{color:var(--accent);font-weight:600;font-size:.95rem}
+  .tl ul{margin:8px 0 0;padding-left:18px;color:var(--ink-2);font-size:.95rem}
+  @media (max-width:640px){.tl > li{grid-template-columns:1fr;gap:4px}}
+
+  /* skills */
+  .skill h3{font-family:var(--mono);font-size:.85rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+
+  /* certs */
+  .cert{display:grid;grid-template-columns:220px 1fr;gap:22px;align-items:center}
+  .cert img{width:100%;border:1px solid var(--line);border-radius:8px;display:block}
+  .badge{display:inline-block;font-family:var(--mono);font-size:.72rem;color:#fff;background:var(--accent-2);padding:2px 8px;border-radius:4px;margin-bottom:8px}
+  .id{font-family:var(--mono);font-size:.78rem;color:var(--muted);word-break:break-all;margin-top:8px}
+  @media (max-width:640px){.cert{grid-template-columns:1fr}}
+
+  /* contact */
+  .contact{background:var(--ink);color:#fff;border-radius:16px;padding:44px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:center}
+  .contact h2{margin:0 0 6px;color:#fff}
+  .contact p{margin:0;color:#b9c7d6}
+  .contact .btn.primary{background:#fff;color:var(--ink);border-color:#fff}
+  .contact .btn.ghost{color:#fff;border-color:#4a6077}
+  footer{padding:28px 0 40px;color:var(--muted);font-size:.85rem;text-align:center}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">ahmed<span>.saidani</span>()</a>
+    <nav aria-label="Navigation">
+      <ul>
+        <li><a href="#projets"><span lang="fr">Projets</span><span lang="en">Projects</span></a></li>
+        <li><a href="#experience"><span lang="fr">Expérience</span><span lang="en">Experience</span></a></li>
+        <li><a href="#competences"><span lang="fr">Compétences</span><span lang="en">Skills</span></a></li>
+        <li><a href="#certifications">Certifications</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button class="lang" id="langBtn" type="button" aria-label="Changer de langue / Switch language">EN</button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <span class="tag">// embedded systems · IoT · firmware C/C++</span>
+      <h1>Ahmed Saidani</h1>
+      <p class="lead" lang="fr">Développeur systèmes embarqués &amp; IoT. Je programme des microcontrôleurs en C/C++ et je relie le capteur au cloud : firmware, MQTT, backend et interface.</p>
+      <p class="lead" lang="en">Embedded systems &amp; IoT developer. I program microcontrollers in C/C++ and connect the sensor to the cloud: firmware, MQTT, backend and user interface.</p>
+      <div class="cta">
+        <a class="btn primary" href="assets/CV_Ahmed_Saidani.pdf" download><span lang="fr">Télécharger mon CV</span><span lang="en">Download my CV</span></a>
+        <a class="btn ghost" href="#contact"><span lang="fr">Me contacter</span><span lang="en">Get in touch</span></a>
+        <a class="btn ghost" href="https://github.com/Saidani-Ahmed" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <div class="stats">
+        <div><b>TB</b><span lang="fr">Licence Systèmes Embarqués &amp; IoT</span><span lang="en">BSc Embedded Systems &amp; IoT (with high honours)</span></div>
+        <div><b>3</b><span lang="fr">expériences en entreprise</span><span lang="en">industry experiences</span></div>
+        <div><b>2</b><span lang="fr">certifications (NVIDIA, SOLIDWORKS)</span><span lang="en">certifications (NVIDIA, SOLIDWORKS)</span></div>
+        <div><b>EU</b><span lang="fr">ouvert à une opportunité en Europe</span><span lang="en">open to opportunities in Europe</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="projets">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Réalisations</span><span lang="en">Work</span></div>
+      <h2><span lang="fr">Projets</span><span lang="en">Projects</span></h2>
+      <div class="grid g3">
+        <article class="card featured">
+          <h3>Smart Hotel <span lang="fr">— projet de fin d'études</span><span lang="en">— final-year project</span></h3>
+          <p lang="fr">Système IoT complet pour un hôtel : firmware ESP32 en C/C++ qui lit des capteurs environnementaux et pilote des actionneurs par relais, données envoyées en MQTT à une passerelle Node.js, stockées dans InfluxDB et diffusées en temps réel (WebSocket) vers un backend FastAPI et des interfaces React / React Native.</p>
+          <p lang="en">End-to-end IoT system for a hotel: ESP32 firmware in C/C++ reading environmental sensors and driving relay actuators, data published over MQTT to a Node.js gateway, stored in InfluxDB and streamed in real time (WebSocket) to a FastAPI backend and React / React Native interfaces.</p>
+          <div class="chips"><span class="chip">ESP32</span><span class="chip">C/C++</span><span class="chip">MQTT</span><span class="chip">Node.js</span><span class="chip">InfluxDB</span><span class="chip">FastAPI</span><span class="chip">React</span></div>
+        </article>
+        <article class="card">
+          <h3><span lang="fr">Sac anti-vol intelligent</span><span lang="en">Smart anti-theft bag</span></h3>
+          <p lang="fr">Traceur GPS embarqué programmé en C/C++ : détection de vol et alertes sans fil envoyées au propriétaire.</p>
+          <p lang="en">Embedded GPS tracker programmed in C/C++: theft detection and wireless alerts sent to the owner.</p>
+          <div class="chips"><span class="chip">C/C++</span><span class="chip">GPS</span><span class="chip">Wireless</span></div>
+        </article>
+        <article class="card">
+          <h3><span lang="fr">Robot suiveur de ligne</span><span lang="en">Line-following robot</span></h3>
+          <p lang="fr">Barre de capteurs infrarouges et régulation moteur en boucle fermée pour une navigation autonome.</p>
+          <p lang="en">Infrared sensor array and closed-loop motor control for autonomous navigation.</p>
+          <div class="chips"><span class="chip">IR sensors</span><span class="chip">Motor control</span><span class="chip">Closed loop</span></div>
+        </article>
+        <article class="card">
+          <h3><span lang="fr">Système d'irrigation connecté</span><span lang="en">Connected irrigation system</span></h3>
+          <p lang="fr">ESP32 qui publie les mesures des capteurs en MQTT vers un tableau de bord Node-RED.</p>
+          <p lang="en">ESP32 publishing sensor readings over MQTT to a Node-RED dashboard.</p>
+          <div class="chips"><span class="chip">ESP32</span><span class="chip">MQTT</span><span class="chip">Node-RED</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Parcours</span><span lang="en">Background</span></div>
+      <h2><span lang="fr">Expérience &amp; formation</span><span lang="en">Experience &amp; education</span></h2>
+      <ul class="tl">
+        <li>
+          <div class="when"><span lang="fr">Juil. – Sept. 2026</span><span lang="en">Jul – Sep 2026</span></div>
+          <div>
+            <h3><span lang="fr">Technicien câblage d'armoires électriques</span><span lang="en">Electrical cabinet wiring technician</span></h3>
+            <div class="org">Sagemcom · Ben Arous, <span lang="fr">Tunisie</span><span lang="en">Tunisia</span></div>
+            <ul>
+              <li lang="fr">Câblage d'armoires électriques à partir de schémas en environnement industriel.</li>
+              <li lang="en">Wiring of electrical cabinets from schematics in an industrial environment.</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="when"><span lang="fr">Janv. – Mai 2026</span><span lang="en">Jan – May 2026</span></div>
+          <div>
+            <h3><span lang="fr">Stagiaire développeur IoT (PFE)</span><span lang="en">IoT developer intern (final-year project)</span></h3>
+            <div class="org">Kernel Solution &amp; Innovation (KSI) · <span lang="fr">Tunisie</span><span lang="en">Tunisia</span></div>
+            <ul lang="fr">
+              <li>Firmware ESP32 en C/C++ : acquisition de capteurs et commande d'actionneurs par relais.</li>
+              <li>Communication MQTT vers une passerelle Node.js, stockage InfluxDB, temps réel WebSocket.</li>
+              <li>Intégration de bout en bout jusqu'au backend FastAPI et aux interfaces React / React Native.</li>
+            </ul>
+            <ul lang="en">
+              <li>ESP32 firmware in C/C++: sensor acquisition and relay-driven actuator control.</li>
+              <li>MQTT communication to a Node.js gateway, InfluxDB storage, real-time WebSocket streaming.</li>
+              <li>End-to-end integration up to a FastAPI backend and React / React Native interfaces.</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="when">2025</div>
+          <div>
+            <h3><span lang="fr">Stagiaire développement web</span><span lang="en">Web development intern</span></h3>
+            <div class="org">Centre National de l'Informatique (CNI) · <span lang="fr">Tunisie</span><span lang="en">Tunisia</span></div>
+            <ul>
+              <li lang="fr">Plateforme de gestion des formations : authentification, planification, gestion des rôles et API REST.</li>
+              <li lang="en">Training management platform: authentication, scheduling, role management and REST API.</li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <div class="when">2023 – 2026</div>
+          <div>
+            <h3><span lang="fr">Licence Appliquée en Systèmes Embarqués &amp; IoT — Mention Très Bien</span><span lang="en">Applied Bachelor's in Embedded Systems &amp; IoT — High honours</span></h3>
+            <div class="org">ISTIC – Université de Carthage · <span lang="fr">Tunisie</span><span lang="en">Tunisia</span></div>
+          </div>
+        </li>
+        <li>
+          <div class="when">2022 – 2023</div>
+          <div>
+            <h3><span lang="fr">Baccalauréat Mathématiques</span><span lang="en">Baccalaureate in Mathematics</span></h3>
+            <div class="org">Lycée Sadiki · <span lang="fr">Tunisie</span><span lang="en">Tunisia</span></div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="competences">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Boîte à outils</span><span lang="en">Toolbox</span></div>
+      <h2><span lang="fr">Compétences</span><span lang="en">Skills</span></h2>
+      <div class="grid g3">
+        <div class="card skill"><h3><span lang="fr">Embarqué</span><span lang="en">Embedded</span></h3>
+          <div class="chips"><span class="chip">C</span><span class="chip">C++</span><span class="chip">ESP32</span><span class="chip">Arduino</span><span class="chip">Firmware</span><span class="chip">GPIO</span><span class="chip">UART</span><span class="chip">Sensors</span><span class="chip">Relays</span><span class="chip">Motor control</span></div></div>
+        <div class="card skill"><h3>IoT &amp; communication</h3>
+          <div class="chips"><span class="chip">MQTT</span><span class="chip">WebSocket</span><span class="chip">Node-RED</span><span class="chip">InfluxDB</span></div></div>
+        <div class="card skill"><h3><span lang="fr">Électronique</span><span lang="en">Electronics</span></h3>
+          <div class="chips"><span class="chip">Schematics</span><span class="chip">Wiring</span><span class="chip">Hardware debugging</span><span class="chip">SolidWorks</span></div></div>
+        <div class="card skill"><h3><span lang="fr">Logiciel</span><span lang="en">Software</span></h3>
+          <div class="chips"><span class="chip">Python</span><span class="chip">FastAPI</span><span class="chip">Node.js</span><span class="chip">React</span><span class="chip">React Native</span><span class="chip">REST API</span></div></div>
+        <div class="card skill"><h3><span lang="fr">IA</span><span lang="en">AI</span></h3>
+          <div class="chips"><span class="chip">NLP</span><span class="chip">Transformers</span><span class="chip">BERT</span></div></div>
+        <div class="card skill"><h3><span lang="fr">Outils &amp; langues</span><span lang="en">Tools &amp; languages</span></h3>
+          <div class="chips"><span class="chip">Git</span><span class="chip">VS Code</span><span class="chip">Linux</span><span class="chip" lang="fr">Arabe natif</span><span class="chip" lang="en">Arabic (native)</span><span class="chip" lang="fr">Français courant</span><span class="chip" lang="en">French (fluent)</span><span class="chip" lang="fr">Anglais technique</span><span class="chip" lang="en">English (technical)</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="certifications">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Validé</span><span lang="en">Verified</span></div>
+      <h2>Certifications</h2>
+      <div class="grid">
+        <div class="card cert">
+          <a href="assets/certificat-nvidia-nlp.png" target="_blank" rel="noopener"><img src="assets/certificat-nvidia-nlp.png" alt="Certificat NVIDIA DLI — Building Transformer-Based NLP Applications" loading="lazy"></a>
+          <div>
+            <span class="badge">NVIDIA DLI</span>
+            <h3>Building Transformer-Based Natural Language Processing Applications</h3>
+            <p lang="fr">Certificate of Competency délivré par le NVIDIA Deep Learning Institute, octobre 2026 : architecture Transformer, auto-attention et modèles de type BERT appliqués à des tâches de NLP.</p>
+            <p lang="en">Certificate of Competency issued by the NVIDIA Deep Learning Institute, October 2026: Transformer architecture, self-attention and BERT-style models applied to NLP tasks.</p>
+            <div class="id">Certification ID: KHbeD5PwRTmBHREy3udmMA</div>
+          </div>
+        </div>
+        <div class="card">
+          <span class="badge" style="background:var(--accent)">Dassault Systèmes</span>
+          <h3>Certified SOLIDWORKS Associate (CSWA)</h3>
+          <p lang="fr">Certification officielle en conception mécanique 3D, 2026.</p>
+          <p lang="en">Official certification in 3D mechanical design, 2026.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="activites">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Engagement</span><span lang="en">Involvement</span></div>
+      <h2><span lang="fr">Activités</span><span lang="en">Activities</span></h2>
+      <div class="grid g2">
+        <div class="card"><h3>Makers Lab ISTIC</h3>
+          <p lang="fr">Ateliers IoT, robotique et systèmes embarqués.</p>
+          <p lang="en">IoT, robotics and embedded systems workshops.</p></div>
+        <div class="card"><h3>ISTIC Robots 3.0</h3>
+          <p lang="fr">Membre de l'équipe d'organisation d'une compétition de robotique.</p>
+          <p lang="en">Organising team member for a robotics competition.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <h2><span lang="fr">Travaillons ensemble</span><span lang="en">Let's work together</span></h2>
+          <p lang="fr">Ouvert à un poste, une alternance ou une poursuite d'études en systèmes embarqués &amp; IoT en Europe.</p>
+          <p lang="en">Open to a job, a work-study programme or further studies in embedded systems &amp; IoT in Europe.</p>
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="mailto:saidani.ahmedsaaa@gmail.com">saidani.ahmedsaaa@gmail.com</a>
+          <a class="btn ghost" href="https://www.linkedin.com/in/saidani-ahmed-47326326b" target="_blank" rel="noopener">LinkedIn</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© <span id="year">2026</span> Ahmed Saidani · Tunis, Tunisie</footer>
+
+<script>
+  (function(){
+    var root = document.documentElement, btn = document.getElementById('langBtn');
+    function setLang(l){
+      root.setAttribute('data-lang', l); root.setAttribute('lang', l);
+      btn.textContent = l === 'fr' ? 'EN' : 'FR';
+      document.title = l === 'fr' ? 'Ahmed Saidani — Développeur Systèmes Embarqués & IoT' : 'Ahmed Saidani — Embedded Systems & IoT Developer';
+      try { localStorage.setItem('lang', l); } catch(e){}
+    }
+    var saved = null;
+    try { saved = localStorage.getItem('lang'); } catch(e){}
+    var initial = saved || ((navigator.language || 'fr').slice(0,2) === 'fr' ? 'fr' : 'en');
+    setLang(initial);
+    btn.addEventListener('click', function(){ setLang(root.getAttribute('data-lang') === 'fr' ? 'en' : 'fr'); });
+    document.getElementById('year').textContent = new Date().getFullYear();
+  })();
+</script>
+</body>
+</html>
