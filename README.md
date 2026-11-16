@@ -16,4 +16,5 @@ Site statique (HTML/CSS/JS, sans build), bilingue FR/EN.
 
 ## Mettre à jour
 - CV : remplacer `assets/CV_Ahmed_Saidani.pdf`.
-- Projets : dupliquer un bloc `<article class="card">` dans `index.html` (texte FR dans `lang="fr"`, EN dans `lang="en"`).
+- Nouveau projet : copier `projets/gestion-formations.html`, adapter le contenu, puis ajouter une carte `<article class="card">` dans `index.html`. Images en WebP dans `assets/img/`.
+- Styles et bascule FR/EN partagés : `assets/site.css`, `assets/site.js`.

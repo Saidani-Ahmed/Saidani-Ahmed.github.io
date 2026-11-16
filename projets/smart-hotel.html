@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" data-title-fr="Smart Hotel — Système intelligent de gestion hôtelière | Ahmed Saidani" data-title-en="Smart Hotel — Intelligent hotel management system | Ahmed Saidani">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Smart Hotel — Système intelligent de gestion hôtelière | Ahmed Saidani</title>
+<meta name="description" content="Projet de fin d'études : chambre d'hôtel connectée. Firmware ESP32 en C/C++, 6 capteurs, 3 relais, MQTT (Mosquitto), passerelle Node.js, InfluxDB, backend FastAPI, Supabase et application mobile React Native.">
+<meta name="author" content="Ahmed Saidani">
+<meta property="og:title" content="Smart Hotel — Système intelligent de gestion hôtelière">
+<meta property="og:description" content="ESP32, MQTT, Node.js, InfluxDB, FastAPI, React Native : une chambre d'hôtel connectée de bout en bout.">
+<meta property="og:image" content="https://saidani-ahmed.github.io/assets/img/sh-architecture.webp">
+<meta name="theme-color" content="#0b1f33">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="../index.html">ahmed<span>.saidani</span>()</a>
+    <nav aria-label="Navigation">
+      <ul>
+        <li><a href="../index.html#projets"><span lang="fr">Projets</span><span lang="en">Projects</span></a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#materiel"><span lang="fr">Matériel</span><span lang="en">Hardware</span></a></li>
+        <li><a href="#application">Application</a></li>
+        <li><a href="../demo/smart-hotel.html"><span lang="fr">Démo</span><span lang="en">Demo</span></a></li>
+      </ul>
+    </nav>
+    <button class="lang" id="langBtn" type="button" aria-label="Changer de langue / Switch language">EN</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero phead">
+    <div class="wrap">
+      <div class="crumb"><a href="../index.html#projets"><span lang="fr">Projets</span><span lang="en">Projects</span></a> / smart-hotel</div>
+      <span class="tag" style="margin-top:14px"><span lang="fr">// projet de fin d'études · 2026</span><span lang="en">// final-year project · 2026</span></span>
+      <h1 lang="fr">Smart Hotel : système intelligent de gestion hôtelière</h1>
+      <h1 lang="en">Smart Hotel: an intelligent hotel management system</h1>
+      <p class="lead" lang="fr">Une chambre d'hôtel connectée de bout en bout : un ESP32 lit six capteurs et pilote trois relais, les mesures remontent en MQTT jusqu'à une application mobile qui les affiche en temps réel.</p>
+      <p class="lead" lang="en">An end-to-end connected hotel room: an ESP32 reads six sensors and drives three relays, and measurements travel over MQTT to a mobile app that displays them in real time.</p>
+      <div class="cta">
+        <a class="btn primary" href="../demo/smart-hotel.html"><span lang="fr">Lancer la démo interactive</span><span lang="en">Launch the interactive demo</span></a>
+        <a class="btn ghost" href="#architecture">Architecture</a>
+      </div>
+      <div class="meta">
+        <div><b lang="fr">Stagiaire développeur IoT</b><b lang="en">IoT developer intern</b><span lang="fr">Rôle</span><span lang="en">Role</span></div>
+        <div><b>Kernel Solution &amp; Innovation</b><span lang="fr">Entreprise d'accueil</span><span lang="en">Host company</span></div>
+        <div><b lang="fr">Janv. – Mai 2026</b><b lang="en">Jan – May 2026</b><span lang="fr">Soutenu le 4 juin 2026, ISTIC</span><span lang="en">Defended on 4 June 2026, ISTIC</span></div>
+        <div><b lang="fr">Binôme avec Khalil Ktiti</b><b lang="en">Pair project with Khalil Ktiti</b><span lang="fr">Équipe</span><span lang="en">Team</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap two">
+      <div class="prose">
+        <div class="kicker"><span lang="fr">Le problème</span><span lang="en">The problem</span></div>
+        <h2><span lang="fr">Des chambres que personne ne surveille</span><span lang="en">Rooms nobody is watching</span></h2>
+        <p lang="fr">Dans un hôtel classique, les demandes de ménage et de maintenance passent par téléphone, et personne ne suit en continu la température, l'eau ou l'électricité d'une chambre. Les pannes ne sont découvertes qu'après la réclamation du client.</p>
+        <p lang="en">In a conventional hotel, housekeeping and maintenance requests go through the phone, and nobody continuously tracks a room's temperature, water or electricity. Faults are only discovered after a guest complains.</p>
+      </div>
+      <div class="prose">
+        <div class="kicker"><span lang="fr">La solution</span><span lang="en">The solution</span></div>
+        <h2><span lang="fr">Une plateforme, cinq rôles</span><span lang="en">One platform, five roles</span></h2>
+        <p lang="fr">Une application mobile unique relie le client, la réception, le ménage, la maintenance et l'administration. Chaque chambre embarque un ESP32 qui remonte ses mesures et exécute les commandes : éclairage, climatisation, serrure.</p>
+        <p lang="en">A single mobile app connects the guest, reception, housekeeping, maintenance and administration. Each room carries an ESP32 that reports its measurements and executes commands: lighting, air conditioning, door lock.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Conception</span><span lang="en">Design</span></div>
+      <h2>Architecture</h2>
+      <div class="prose">
+        <p lang="fr">Le système sépare deux flux. Le <b>flux IoT</b> transporte les mesures des capteurs jusqu'à l'écran ; le <b>flux métier</b> gère les réservations, les séjours et les tâches du personnel.</p>
+        <p lang="en">The system separates two flows. The <b>IoT flow</b> carries sensor measurements to the screen; the <b>business flow</b> handles bookings, stays and staff tasks.</p>
+      </div>
+      <div class="flow" aria-label="IoT flow"><span lang="fr">Capteurs</span><span lang="en">Sensors</span><i>→</i><span>ESP32 (C/C++)</span><i>→ JSON / MQTT →</i><span>Mosquitto</span><i>→</i><span>Node.js</span><i>→</i><span>InfluxDB</span><i>+ WebSocket →</i><span>React Native</span></div>
+      <div class="flow" aria-label="Business flow"><span>React Native</span><i>→ REST →</i><span>FastAPI</span><i>→</i><span>Supabase (PostgreSQL)</span></div>
+      <figure>
+        <img src="../assets/img/sh-architecture.webp" alt="Schéma d'architecture : capteurs, ESP32, broker MQTT, Node.js, FastAPI, InfluxDB, Supabase, application mobile" width="1400" height="933" loading="lazy">
+        <figcaption lang="fr">Vue d'ensemble : la passerelle Node.js stocke les mesures dans InfluxDB et les diffuse en WebSocket ; FastAPI porte la logique métier.</figcaption>
+        <figcaption lang="en">Overview: the Node.js gateway stores measurements in InfluxDB and streams them over WebSocket; FastAPI holds the business logic.</figcaption>
+      </figure>
+      <div class="grid g3" style="margin-top:28px">
+        <div class="card"><h3><span lang="fr">Embarqué</span><span lang="en">Embedded</span></h3>
+          <p lang="fr">Firmware ESP32 écrit en C/C++ avec Arduino IDE : lecture des capteurs, connexion Wi-Fi, publication JSON, réception des commandes.</p>
+          <p lang="en">ESP32 firmware written in C/C++ with the Arduino IDE: sensor reading, Wi-Fi connection, JSON publishing, command handling.</p>
+          <div class="chips"><span class="chip">ESP32</span><span class="chip">C/C++</span><span class="chip">UART</span><span class="chip">GPIO</span></div></div>
+        <div class="card"><h3><span lang="fr">Communication &amp; données</span><span lang="en">Messaging &amp; data</span></h3>
+          <p lang="fr">Broker Mosquitto en publication/abonnement, passerelle Node.js, séries temporelles dans InfluxDB, diffusion temps réel en WebSocket.</p>
+          <p lang="en">Mosquitto broker in publish/subscribe mode, Node.js gateway, time series in InfluxDB, real-time streaming over WebSocket.</p>
+          <div class="chips"><span class="chip">MQTT</span><span class="chip">Mosquitto</span><span class="chip">Node.js</span><span class="chip">InfluxDB</span><span class="chip">WebSocket</span></div></div>
+        <div class="card"><h3><span lang="fr">Backend &amp; mobile</span><span lang="en">Backend &amp; mobile</span></h3>
+          <p lang="fr">API REST FastAPI pour l'authentification, les réservations et les tâches ; données métier dans Supabase ; application React Native avec Expo.</p>
+          <p lang="en">FastAPI REST API for authentication, bookings and tasks; business data in Supabase; React Native app built with Expo.</p>
+          <div class="chips"><span class="chip">FastAPI</span><span class="chip">Supabase</span><span class="chip">PostgreSQL</span><span class="chip">React Native</span><span class="chip">Expo</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="materiel">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Électronique</span><span lang="en">Electronics</span></div>
+      <h2><span lang="fr">Matériel et câblage</span><span lang="en">Hardware and wiring</span></h2>
+      <div class="two">
+        <div>
+          <table class="tbl">
+            <thead><tr><th><span lang="fr">Composant</span><span lang="en">Component</span></th><th><span lang="fr">Broche</span><span lang="en">Pin</span></th><th><span lang="fr">Rôle</span><span lang="en">Role</span></th></tr></thead>
+            <tbody>
+              <tr><td>DHT22</td><td>GPIO 13</td><td><span lang="fr">Température et humidité</span><span lang="en">Temperature and humidity</span></td></tr>
+              <tr><td>LDR</td><td>GPIO 34</td><td><span lang="fr">Luminosité (analogique)</span><span lang="en">Light level (analog)</span></td></tr>
+              <tr><td>YF-S201</td><td>GPIO 14</td><td><span lang="fr">Débit d'eau par impulsions</span><span lang="en">Water flow by pulses</span></td></tr>
+              <tr><td>PIR HC-SR501</td><td>GPIO 27</td><td><span lang="fr">Détection de présence</span><span lang="en">Presence detection</span></td></tr>
+              <tr><td>Reed switch</td><td>GPIO 26</td><td><span lang="fr">Ouverture porte / fenêtre</span><span lang="en">Door / window opening</span></td></tr>
+              <tr><td>PZEM-004T</td><td>GPIO 16 / 17</td><td><span lang="fr">Mesures électriques (UART)</span><span lang="en">Electrical measurements (UART)</span></td></tr>
+              <tr><td><span lang="fr">Relais éclairage</span><span lang="en">Lighting relay</span></td><td>GPIO 25</td><td><span lang="fr">Commande de l'éclairage</span><span lang="en">Lighting control</span></td></tr>
+              <tr><td><span lang="fr">Relais climatisation</span><span lang="en">A/C relay</span></td><td>GPIO 33</td><td><span lang="fr">Commande de la climatisation</span><span lang="en">Air conditioning control</span></td></tr>
+              <tr><td><span lang="fr">Relais serrure</span><span lang="en">Lock relay</span></td><td>GPIO 32</td><td><span lang="fr">Serrure électrique 12 V</span><span lang="en">12 V electric lock</span></td></tr>
+            </tbody>
+          </table>
+          <p class="prose" style="color:var(--ink-2);font-size:.95rem" lang="fr">Le module relais isole l'ESP32 des charges de puissance. Les capteurs sont alimentés en 3,3 V ou 5 V selon leur fiche technique.</p>
+          <p class="prose" style="color:var(--ink-2);font-size:.95rem" lang="en">The relay module isolates the ESP32 from the power loads. Sensors are powered at 3.3 V or 5 V according to their datasheets.</p>
+        </div>
+        <figure style="margin:0">
+          <img src="../assets/img/sh-prototype.webp" alt="Photo du prototype : ESP32, module relais, capteur de débit, serrure électrique" width="800" height="1538" loading="lazy" style="max-height:560px;object-fit:cover">
+          <figcaption lang="fr">Le prototype réel d'une chambre.</figcaption>
+          <figcaption lang="en">The real prototype of one room.</figcaption>
+        </figure>
+      </div>
+      <figure>
+        <img src="../assets/img/sh-schema.webp" alt="Schéma électronique : ESP32 DevKit, six capteurs, module relais, alimentation 5 V et régulateur 3,3 V" width="1400" height="933" loading="lazy">
+        <figcaption lang="fr">Schéma électronique global de la chambre.</figcaption>
+        <figcaption lang="en">Overall electronic schematic of the room.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="firmware">
+    <div class="wrap">
+      <div class="kicker">Firmware</div>
+      <h2><span lang="fr">Ce que fait l'ESP32</span><span lang="en">What the ESP32 does</span></h2>
+      <div class="two">
+        <div class="prose">
+          <ul lang="fr">
+            <li>Au démarrage : configuration des broches, connexion Wi-Fi, connexion au broker Mosquitto et abonnement aux topics de commande.</li>
+            <li>En boucle : reconnexion automatique si le réseau tombe, exécution des commandes reçues (porte, climatisation, éclairage), lecture périodique des capteurs.</li>
+            <li>Les mesures sont validées, sérialisées en JSON puis publiées sur le topic de la chambre.</li>
+            <li>Chaque étape a été testée séparément : capteurs seuls, intégration sur l'ESP32, puis transmission jusqu'au système central.</li>
+          </ul>
+          <ul lang="en">
+            <li>At boot: pin configuration, Wi-Fi connection, connection to the Mosquitto broker and subscription to command topics.</li>
+            <li>In the loop: automatic reconnection if the network drops, execution of received commands (door, A/C, lighting), periodic sensor reading.</li>
+            <li>Measurements are validated, serialised to JSON and published on the room's topic.</li>
+            <li>Each stage was tested separately: sensors alone, integration on the ESP32, then transmission to the central system.</li>
+          </ul>
+          <figure>
+            <img src="../assets/img/sh-influxdb.webp" alt="Tableau de bord InfluxDB affichant les mesures de la chambre 101" width="1400" height="633" loading="lazy">
+            <figcaption lang="fr">Les mesures de la chambre 101 dans InfluxDB.</figcaption>
+            <figcaption lang="en">Room 101 measurements in InfluxDB.</figcaption>
+          </figure>
+        </div>
+        <figure style="margin:0">
+          <img src="../assets/img/sh-organigramme.webp" alt="Organigramme du programme embarqué de l'ESP32" width="800" height="1200" loading="lazy">
+          <figcaption lang="fr">Organigramme du programme embarqué.</figcaption>
+          <figcaption lang="en">Flowchart of the embedded program.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="application">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Résultat</span><span lang="en">Result</span></div>
+      <h2><span lang="fr">L'application mobile</span><span lang="en">The mobile app</span></h2>
+      <div class="phones">
+        <figure><img src="../assets/img/sh-app-sejour.webp" alt="Écran Mon séjour : température en direct, porte, climatiseur" width="600" height="858" loading="lazy">
+          <figcaption lang="fr">Client : température en direct, porte et climatiseur.</figcaption><figcaption lang="en">Guest: live temperature, door and A/C.</figcaption></figure>
+        <figure><img src="../assets/img/sh-app-reception.webp" alt="Tableau de bord de la réception" width="597" height="859" loading="lazy">
+          <figcaption lang="fr">Réception : chambres, arrivées et départs.</figcaption><figcaption lang="en">Reception: rooms, arrivals and departures.</figcaption></figure>
+        <figure><img src="../assets/img/sh-app-admin.webp" alt="Tableau de bord administrateur" width="593" height="854" loading="lazy">
+          <figcaption lang="fr">Administration : occupation et activité du jour.</figcaption><figcaption lang="en">Administration: occupancy and daily activity.</figcaption></figure>
+        <figure><img src="../assets/img/sh-app-install.webp" alt="Écran d'association des ESP32 aux chambres" width="600" height="969" loading="lazy">
+          <figcaption lang="fr">Installation : association d'un ESP32 à une chambre.</figcaption><figcaption lang="en">Installation: pairing an ESP32 with a room.</figcaption></figure>
+      </div>
+      <div class="prose" style="margin-top:32px">
+        <h3><span lang="fr">Pistes d'amélioration</span><span lang="en">Next steps</span></h3>
+        <ul lang="fr">
+          <li>Notifications push pour alerter le personnel en cas d'anomalie.</li>
+          <li>Tableau de bord web pour l'administration générale de l'hôtel.</li>
+          <li>Analyses prédictives sur la consommation et la maintenance à partir des données collectées.</li>
+        </ul>
+        <ul lang="en">
+          <li>Push notifications to alert staff when an anomaly occurs.</li>
+          <li>A web dashboard for overall hotel administration.</li>
+          <li>Predictive analysis of consumption and maintenance from the collected data.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <h2><span lang="fr">Essayez la chambre 101</span><span lang="en">Try room 101</span></h2>
+          <p lang="fr">Une simulation du tableau de bord tourne dans votre navigateur : capteurs, relais et messages MQTT.</p>
+          <p lang="en">A simulation of the dashboard runs in your browser: sensors, relays and MQTT messages.</p>
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="../demo/smart-hotel.html"><span lang="fr">Ouvrir la démo</span><span lang="en">Open the demo</span></a>
+          <a class="btn ghost" href="../index.html#projets"><span lang="fr">Tous les projets</span><span lang="en">All projects</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© <span id="year">2026</span> Ahmed Saidani · <a href="../index.html">saidani-ahmed.github.io</a></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

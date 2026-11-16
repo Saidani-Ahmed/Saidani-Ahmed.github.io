@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" data-title-fr="Application web de gestion des formations (CNI) | Ahmed Saidani" data-title-en="Training management web application (CNI) | Ahmed Saidani">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Application web de gestion des formations (CNI) | Ahmed Saidani</title>
+<meta name="description" content="Projet de fin d'année réalisé au Centre National de l'Informatique : application web PHP / MySQL de gestion des formateurs, des cycles de formation et des participants, interface bilingue arabe-français.">
+<meta name="author" content="Ahmed Saidani">
+<meta property="og:title" content="Application web de gestion des formations — CNI">
+<meta property="og:description" content="PHP, MySQL, architecture trois couches, interface bilingue arabe-français, export Excel.">
+<meta property="og:image" content="https://saidani-ahmed.github.io/assets/img/gf-login.webp">
+<meta name="theme-color" content="#0b1f33">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="../index.html">ahmed<span>.saidani</span>()</a>
+    <nav aria-label="Navigation">
+      <ul>
+        <li><a href="../index.html#projets"><span lang="fr">Projets</span><span lang="en">Projects</span></a></li>
+        <li><a href="#fonctions"><span lang="fr">Fonctionnalités</span><span lang="en">Features</span></a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#interfaces">Interfaces</a></li>
+      </ul>
+    </nav>
+    <button class="lang" id="langBtn" type="button" aria-label="Changer de langue / Switch language">EN</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero phead">
+    <div class="wrap">
+      <div class="crumb"><a href="../index.html#projets"><span lang="fr">Projets</span><span lang="en">Projects</span></a> / gestion-formations</div>
+      <span class="tag" style="margin-top:14px"><span lang="fr">// projet de fin d'année · 2025</span><span lang="en">// end-of-year project · 2025</span></span>
+      <h1 lang="fr">Application web de gestion des formations</h1>
+      <h1 lang="en">Training management web application</h1>
+      <p class="lead" lang="fr">Une application qui remplace les fichiers bureautiques dispersés de l'unité de formation du CNI : formateurs, cycles et participants gérés au même endroit, derrière une connexion sécurisée.</p>
+      <p class="lead" lang="en">An application that replaces the scattered office files of the CNI training unit: trainers, training cycles and participants managed in one place, behind a secure login.</p>
+      <div class="meta">
+        <div><b lang="fr">Stagiaire développement web</b><b lang="en">Web development intern</b><span lang="fr">Rôle — projet individuel</span><span lang="en">Role — solo project</span></div>
+        <div><b>Centre National de l'Informatique</b><span lang="fr">Organisme d'accueil, Tunisie</span><span lang="en">Host organisation, Tunisia</span></div>
+        <div><b lang="fr">12 août – 12 sept. 2025</b><b lang="en">12 Aug – 12 Sep 2025</b><span lang="fr">Période</span><span lang="en">Period</span></div>
+        <div><b>PHP · MySQL · HTML5 · CSS3</b><span>Stack</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap two">
+      <div class="prose">
+        <div class="kicker"><span lang="fr">Le problème</span><span lang="en">The problem</span></div>
+        <h2><span lang="fr">Papier et fichiers dispersés</span><span lang="en">Paper and scattered files</span></h2>
+        <ul lang="fr">
+          <li>Temps perdu à chercher et à ressaisir les informations.</li>
+          <li>Données dupliquées et incohérentes, erreurs de saisie.</li>
+          <li>Suivi difficile des participants et des cycles de formation.</li>
+        </ul>
+        <ul lang="en">
+          <li>Time lost searching for and re-entering information.</li>
+          <li>Duplicated and inconsistent data, input errors.</li>
+          <li>Participants and training cycles hard to track.</li>
+        </ul>
+      </div>
+      <div class="prose" id="fonctions">
+        <div class="kicker"><span lang="fr">La solution</span><span lang="en">The solution</span></div>
+        <h2><span lang="fr">Ce que fait l'application</span><span lang="en">What the application does</span></h2>
+        <ul lang="fr">
+          <li>Authentification de l'administrateur.</li>
+          <li>Gestion des formateurs, des cycles de formation et des participants : ajout, modification, suppression, recherche.</li>
+          <li>Import de données depuis Excel et export des listes de participants.</li>
+          <li>Interface bilingue arabe (droite à gauche) et français, adaptée au mobile.</li>
+        </ul>
+        <ul lang="en">
+          <li>Administrator authentication.</li>
+          <li>Management of trainers, training cycles and participants: add, edit, delete, search.</li>
+          <li>Data import from Excel and export of participant lists.</li>
+          <li>Bilingual Arabic (right-to-left) and French interface, responsive.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="architecture">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Conception</span><span lang="en">Design</span></div>
+      <h2><span lang="fr">Architecture en trois couches</span><span lang="en">Three-tier architecture</span></h2>
+      <div class="grid g3">
+        <div class="card"><h3><span lang="fr">Présentation</span><span lang="en">Presentation</span></h3>
+          <p lang="fr">Formulaires et listes en HTML5 / CSS3 : saisie, affichage et navigation entre les modules.</p>
+          <p lang="en">Forms and lists in HTML5 / CSS3: input, display and navigation between modules.</p>
+          <div class="chips"><span class="chip">HTML5</span><span class="chip">CSS3</span><span class="chip">RTL</span></div></div>
+        <div class="card"><h3><span lang="fr">Logique métier</span><span lang="en">Business logic</span></h3>
+          <p lang="fr">PHP : authentification, vérifications, règles de gestion et échanges avec la base de données.</p>
+          <p lang="en">PHP: authentication, validation, business rules and exchanges with the database.</p>
+          <div class="chips"><span class="chip">PHP</span><span class="chip">Apache</span><span class="chip">XAMPP</span></div></div>
+        <div class="card"><h3><span lang="fr">Données</span><span lang="en">Data</span></h3>
+          <p lang="fr">MySQL : tables utilisateurs, formateurs, cycles et participants, avec contrôle de cohérence.</p>
+          <p lang="en">MySQL: users, trainers, cycles and participants tables, with consistency checks.</p>
+          <div class="chips"><span class="chip">MySQL</span><span class="chip">SQL</span></div></div>
+      </div>
+      <div class="prose" style="margin-top:28px">
+        <p lang="fr"><b>Méthode :</b> Scrum simplifié en deux sprints. Le premier couvre l'authentification et la gestion des formateurs, le second les cycles et les participants. Chaque sprint s'appuie sur des diagrammes UML (PlantUML) et des maquettes validées avant le développement.</p>
+        <p lang="en"><b>Method:</b> simplified Scrum in two sprints. The first covers authentication and trainer management, the second training cycles and participants. Each sprint relies on UML diagrams (PlantUML) and mock-ups validated before development.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="interfaces">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Résultat</span><span lang="en">Result</span></div>
+      <h2>Interfaces</h2>
+      <figure style="margin-top:0">
+        <img src="../assets/img/gf-login.webp" alt="Écran de connexion de l'application, en arabe, avec bascule vers le français" width="1400" height="636" loading="lazy">
+        <figcaption lang="fr">Connexion, avec bascule arabe / français.</figcaption>
+        <figcaption lang="en">Login, with Arabic / French switch.</figcaption>
+      </figure>
+      <div class="two">
+        <figure>
+          <img src="../assets/img/gf-dashboard.webp" alt="Tableau de bord : gestion des utilisateurs, rapports et export Excel" width="1400" height="644" loading="lazy">
+          <figcaption lang="fr">Tableau de bord : utilisateurs, rapports, export Excel.</figcaption>
+          <figcaption lang="en">Dashboard: users, reports, Excel export.</figcaption>
+        </figure>
+        <figure>
+          <img src="../assets/img/gf-cycle.webp" alt="Formulaire d'ajout d'un cycle de formation" width="1400" height="641" loading="lazy">
+          <figcaption lang="fr">Ajout d'un cycle de formation et de ses formateurs.</figcaption>
+          <figcaption lang="en">Adding a training cycle and its trainers.</figcaption>
+        </figure>
+      </div>
+      <div class="prose" style="margin-top:32px">
+        <h3><span lang="fr">Pistes d'amélioration</span><span lang="en">Next steps</span></h3>
+        <ul lang="fr">
+          <li>Module de statistiques et de rapports.</li>
+          <li>Notifications par e-mail ou SMS.</li>
+          <li>Déploiement en ligne avec plusieurs rôles : administrateur, formateur, participant.</li>
+        </ul>
+        <ul lang="en">
+          <li>Statistics and reporting module.</li>
+          <li>E-mail or SMS notifications.</li>
+          <li>Online deployment with several roles: administrator, trainer, participant.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <h2><span lang="fr">Voir le projet suivant</span><span lang="en">See the next project</span></h2>
+          <p lang="fr">Smart Hotel : une chambre connectée, de l'ESP32 à l'application mobile.</p>
+          <p lang="en">Smart Hotel: a connected room, from the ESP32 to the mobile app.</p>
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="smart-hotel.html">Smart Hotel</a>
+          <a class="btn ghost" href="../index.html#projets"><span lang="fr">Tous les projets</span><span lang="en">All projects</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© <span id="year">2026</span> Ahmed Saidani · <a href="../index.html">saidani-ahmed.github.io</a></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

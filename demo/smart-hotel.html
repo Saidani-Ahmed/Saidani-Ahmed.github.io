@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" data-title-fr="Démo Smart Hotel — Chambre 101 | Ahmed Saidani" data-title-en="Smart Hotel demo — Room 101 | Ahmed Saidani">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Démo Smart Hotel — Chambre 101 | Ahmed Saidani</title>
+<meta name="description" content="Démo interactive du projet Smart Hotel : tableau de bord d'une chambre connectée avec capteurs, relais et messages MQTT simulés dans le navigateur.">
+<meta name="theme-color" content="#0b1f33">
+<link rel="stylesheet" href="../assets/site.css">
+<style>
+  body{background:#0b1622;color:#e6edf5}
+  header.nav{background:rgba(11,22,34,.9);border-color:#1e2e40}
+  .brand,nav a,.lang{color:#e6edf5}
+  .brand span{color:#6fb1ff}
+  .lang{background:#13202f;border-color:#1e2e40}
+  .wrap{max-width:1120px}
+  .top{padding:36px 0 18px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:flex-end}
+  .top h1{font-size:1.9rem;margin:8px 0 4px}
+  .top p{margin:0;color:#8fa3b8;max-width:620px}
+  .sim{font-family:var(--mono);font-size:.76rem;background:#3a2a05;color:#ffcf66;border:1px solid #6b4e0c;border-radius:6px;padding:4px 10px;display:inline-block}
+  .status{font-family:var(--mono);font-size:.82rem;color:#8fa3b8;text-align:right}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#35d07f;margin-right:6px;box-shadow:0 0 0 0 rgba(53,208,127,.6);animation:pulse 1.6s infinite}
+  @keyframes pulse{70%{box-shadow:0 0 0 8px rgba(53,208,127,0)}100%{box-shadow:0 0 0 0 rgba(53,208,127,0)}}
+  @media (prefers-reduced-motion:reduce){.dot{animation:none}}
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .tile{background:#13202f;border:1px solid #1e2e40;border-radius:12px;padding:16px}
+  .tile .k{font-family:var(--mono);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:#8fa3b8}
+  .tile .v{font-family:var(--mono);font-size:1.7rem;font-weight:700;margin-top:6px}
+  .tile .v small{font-size:.85rem;color:#8fa3b8;font-weight:400;margin-left:4px}
+  .tile .pin{font-family:var(--mono);font-size:.7rem;color:#5d7389;margin-top:6px}
+  .on{color:#35d07f}.off{color:#8fa3b8}.warn{color:#ffb454}
+  .row{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin-top:14px}
+  .panel{background:#13202f;border:1px solid #1e2e40;border-radius:12px;padding:18px}
+  .panel h2{font-size:1rem;margin:0 0 12px;letter-spacing:0}
+  canvas{width:100%;height:210px;display:block}
+  .legend{display:flex;gap:18px;font-size:.8rem;color:#8fa3b8;margin-top:8px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+  .ctl{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1e2e40}
+  .ctl:last-of-type{border-bottom:0}
+  .ctl b{display:block}
+  .ctl span.s{font-family:var(--mono);font-size:.75rem;color:#8fa3b8}
+  .sw{font:inherit;font-weight:600;font-size:.88rem;border-radius:8px;padding:9px 16px;cursor:pointer;border:1px solid #2b4058;background:#0b1622;color:#e6edf5;min-width:108px}
+  .sw[aria-pressed="true"]{background:#35d07f;border-color:#35d07f;color:#062313}
+  .sw:focus-visible{outline:2px solid #6fb1ff;outline-offset:2px}
+  .log{font-family:var(--mono);font-size:.74rem;line-height:1.55;background:#070e17;border:1px solid #1e2e40;border-radius:8px;padding:12px;height:230px;overflow:auto;white-space:pre-wrap;word-break:break-all;color:#9fd3a8}
+  .log .cmd{color:#ffb454}
+  .log .t{color:#5d7389}
+  .foot{color:#8fa3b8;font-size:.85rem;padding:26px 0 44px}
+  .foot a{color:#6fb1ff}
+  @media (max-width:860px){.board{grid-template-columns:1fr 1fr}.row{grid-template-columns:1fr}.status{text-align:left}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="../index.html">ahmed<span>.saidani</span>()</a>
+    <nav aria-label="Navigation">
+      <ul>
+        <li><a href="../projets/smart-hotel.html"><span lang="fr">← Le projet Smart Hotel</span><span lang="en">← The Smart Hotel project</span></a></li>
+      </ul>
+    </nav>
+    <button class="lang" id="langBtn" type="button" aria-label="Changer de langue / Switch language">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="top">
+    <div>
+      <span class="sim"><span lang="fr">SIMULATION — aucune chambre réelle n'est connectée</span><span lang="en">SIMULATION — no real room is connected</span></span>
+      <h1><span lang="fr">Chambre 101</span><span lang="en">Room 101</span></h1>
+      <p lang="fr">Reproduction dans le navigateur du flux du projet : l'ESP32 publie un message JSON, la passerelle le diffuse, le tableau de bord se met à jour. Actionnez les relais et observez les capteurs réagir.</p>
+      <p lang="en">A browser reproduction of the project's data flow: the ESP32 publishes a JSON message, the gateway streams it, the dashboard updates. Toggle the relays and watch the sensors react.</p>
+    </div>
+    <div class="status"><span class="dot"></span>esp32_1 · <span lang="fr">en ligne</span><span lang="en">online</span><br><span id="clock">--:--:--</span> · <span id="count">0</span> msg</div>
+  </div>
+
+  <div class="board">
+    <div class="tile"><div class="k"><span lang="fr">Température</span><span lang="en">Temperature</span></div><div class="v"><span id="v-temp">--</span><small>°C</small></div><div class="pin">DHT22 · GPIO 13</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Humidité</span><span lang="en">Humidity</span></div><div class="v"><span id="v-hum">--</span><small>%</small></div><div class="pin">DHT22 · GPIO 13</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Luminosité</span><span lang="en">Light level</span></div><div class="v"><span id="v-ldr">--</span><small>/4095</small></div><div class="pin">LDR · GPIO 34</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Puissance</span><span lang="en">Power</span></div><div class="v"><span id="v-pow">--</span><small>W</small></div><div class="pin">PZEM-004T · UART 16/17</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Présence</span><span lang="en">Presence</span></div><div class="v" id="v-pir">--</div><div class="pin">PIR HC-SR501 · GPIO 27</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Porte</span><span lang="en">Door</span></div><div class="v" id="v-door">--</div><div class="pin">Reed switch · GPIO 26</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Débit d'eau</span><span lang="en">Water flow</span></div><div class="v"><span id="v-flow">--</span><small>L/min</small></div><div class="pin">YF-S201 · GPIO 14</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Énergie</span><span lang="en">Energy</span></div><div class="v"><span id="v-wh">--</span><small>Wh</small></div><div class="pin">PZEM-004T</div></div>
+  </div>
+
+  <div class="row">
+    <div class="panel">
+      <h2><span lang="fr">Historique (2 dernières minutes)</span><span lang="en">History (last 2 minutes)</span></h2>
+      <canvas id="chart" width="900" height="300" role="img" aria-label="Temperature and power history"></canvas>
+      <div class="legend"><span><i style="background:#6fb1ff"></i><span lang="fr">Température (°C)</span><span lang="en">Temperature (°C)</span></span><span><i style="background:#ffb454"></i><span lang="fr">Puissance (W)</span><span lang="en">Power (W)</span></span></div>
+    </div>
+    <div class="panel">
+      <h2><span lang="fr">Actionneurs (module relais)</span><span lang="en">Actuators (relay module)</span></h2>
+      <div class="ctl"><div><b><span lang="fr">Éclairage</span><span lang="en">Lighting</span></b><span class="s">relay · GPIO 25</span></div><button class="sw" id="b-light" aria-pressed="false" type="button">OFF</button></div>
+      <div class="ctl"><div><b><span lang="fr">Climatisation</span><span lang="en">Air conditioning</span></b><span class="s">relay · GPIO 33</span></div><button class="sw" id="b-ac" aria-pressed="false" type="button">OFF</button></div>
+      <div class="ctl"><div><b><span lang="fr">Serrure</span><span lang="en">Door lock</span></b><span class="s">relay · GPIO 32 · 12 V</span></div><button class="sw" id="b-lock" aria-pressed="false" type="button"><span lang="fr">Ouvrir</span><span lang="en">Unlock</span></button></div>
+      <div class="ctl"><div><b><span lang="fr">Robinet</span><span lang="en">Tap</span></b><span class="s"><span lang="fr">simule un client qui ouvre l'eau</span><span lang="en">simulates a guest running water</span></span></div><button class="sw" id="b-tap" aria-pressed="false" type="button">OFF</button></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h2><span lang="fr">Messages MQTT (publication ESP32 → broker, commandes application → ESP32)</span><span lang="en">MQTT messages (ESP32 → broker publishing, app → ESP32 commands)</span></h2>
+    <div class="log" id="log" aria-live="off"></div>
+  </div>
+
+  <p class="foot" lang="fr">Les valeurs sont générées par un modèle simple dans cette page ; les noms de topics sont illustratifs. Le vrai système est décrit sur la <a href="../projets/smart-hotel.html">page du projet</a>.</p>
+  <p class="foot" lang="en">Values are generated by a simple model inside this page; topic names are illustrative. The real system is described on the <a href="../projets/smart-hotel.html">project page</a>.</p>
+</main>
+
+<script src="../assets/site.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var st = { temp: 26.4, hum: 52, ldr: 900, flow: 0, motion: 0, door: 'closed', light: false, ac: false, tap: false, wh: 0, lockUntil: 0, motionUntil: 0, n: 0 };
+  var hist = [];
+  var rnd = function(a){ return (Math.random() - .5) * a; };
+  var lang = function(){ return document.documentElement.getAttribute('data-lang'); };
+
+  function log(html){
+    var el = $('log'), d = new Date();
+    var t = '<span class="t">' + d.toTimeString().slice(0,8) + '</span> ';
+    el.insertAdjacentHTML('beforeend', t + html + '\n');
+    while (el.childNodes.length > 80) el.removeChild(el.firstChild);
+    el.scrollTop = el.scrollHeight;
+  }
+  function cmd(target, value){
+    log('<span class="cmd">CMD  hotel/room/101/cmd  ' + JSON.stringify({target: target, value: value}) + '</span>');
+  }
+
+  function step(){
+    var now = Date.now();
+    // thermique : la clim tire vers 21 °C, sinon dérive vers 27 °C
+    var target = st.ac ? 21 : 27;
+    st.temp += (target - st.temp) * (st.ac ? 0.06 : 0.025) + rnd(0.08);
+    st.hum += ((st.ac ? 44 : 55) - st.hum) * 0.04 + rnd(0.4);
+    // luminosité : la lampe fait monter la lecture de la LDR
+    st.ldr += (((st.light ? 3300 : 850)) - st.ldr) * 0.5 + rnd(60);
+    st.ldr = Math.max(0, Math.min(4095, st.ldr));
+    // présence : aléatoire, ou forcée après ouverture de la porte
+    if (Math.random() < 0.08) st.motionUntil = now + 4000;
+    st.motion = now < st.motionUntil ? 1 : 0;
+    // porte : ouverte 5 s après une commande de serrure
+    var wasOpen = st.door === 'open';
+    st.door = now < st.lockUntil ? 'open' : 'closed';
+    if (wasOpen && st.door === 'closed') setBtn('b-lock', false);
+    st.flow = st.tap ? 6.5 + rnd(0.8) : 0;
+    var power = 4 + (st.light ? 12 : 0) + (st.ac ? 880 + rnd(40) : 0) + rnd(1);
+    st.power = Math.max(0, power);
+    st.wh += st.power * 2 / 3600;
+    st.n++;
+
+    var msg = { room: '101', device: 'esp32_1', temperature: +st.temp.toFixed(1), humidity: +st.hum.toFixed(1),
+      ldr: Math.round(st.ldr), flow: +st.flow.toFixed(1), motion: st.motion, door: st.door,
+      relay: { light: st.light ? 'on' : 'off', lock: st.door === 'open' ? 'active' : 'inactive' },
+      ac_status: st.ac ? 'on' : 'off', power: +st.power.toFixed(1) };
+    log('PUB  hotel/room/101/telemetry  ' + JSON.stringify(msg));
+    hist.push({ t: st.temp, p: st.power }); if (hist.length > 60) hist.shift();
+    render(); draw();
+  }
+
+  function render(){
+    var fr = lang() === 'fr';
+    $('v-temp').textContent = st.temp.toFixed(1);
+    $('v-hum').textContent = st.hum.toFixed(0);
+    $('v-ldr').textContent = Math.round(st.ldr);
+    $('v-pow').textContent = st.power.toFixed(0);
+    $('v-flow').textContent = st.flow.toFixed(1);
+    $('v-wh').textContent = st.wh.toFixed(2);
+    var pir = $('v-pir'); pir.textContent = st.motion ? (fr ? 'Détectée' : 'Detected') : (fr ? 'Aucune' : 'None'); pir.className = 'v ' + (st.motion ? 'on' : 'off');
+    var door = $('v-door'); door.textContent = st.door === 'open' ? (fr ? 'Ouverte' : 'Open') : (fr ? 'Fermée' : 'Closed'); door.className = 'v ' + (st.door === 'open' ? 'warn' : 'off');
+    $('clock').textContent = new Date().toTimeString().slice(0,8);
+    $('count').textContent = st.n;
+  }
+
+  function draw(){
+    var c = $('chart'), g = c.getContext('2d'), W = c.width, H = c.height, pad = 34;
+    g.clearRect(0,0,W,H);
+    g.strokeStyle = '#1e2e40'; g.lineWidth = 1; g.fillStyle = '#5d7389'; g.font = '11px monospace';
+    for (var i = 0; i <= 4; i++){
+      var y = pad/2 + (H - pad) * i / 4;
+      g.beginPath(); g.moveTo(pad, y); g.lineTo(W - pad, y); g.stroke();
+      g.textAlign = 'right'; g.fillText((30 - i * 3) + '°', pad - 6, y + 4);
+      g.textAlign = 'left'; g.fillText((1000 - i * 250) + '', W - pad + 6, y + 4);
+    }
+    function line(key, min, max, color){
+      if (hist.length < 2) return;
+      g.beginPath(); g.strokeStyle = color; g.lineWidth = 2.5; g.lineJoin = 'round';
+      hist.forEach(function(h, i){
+        var x = pad + (W - 2 * pad) * i / 59;
+        var v = Math.max(min, Math.min(max, h[key]));
+        var y = pad/2 + (H - pad) * (1 - (v - min) / (max - min));
+        if (i) g.lineTo(x, y); else g.moveTo(x, y);
+      });
+      g.stroke();
+    }
+    line('p', 0, 1000, '#ffb454');
+    line('t', 18, 30, '#6fb1ff');
+  }
+
+  function setBtn(id, on){
+    var b = $(id); b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (id !== 'b-lock') b.textContent = on ? 'ON' : 'OFF';
+  }
+  $('b-light').addEventListener('click', function(){ st.light = !st.light; setBtn('b-light', st.light); cmd('light', st.light ? 'on' : 'off'); });
+  $('b-ac').addEventListener('click', function(){ st.ac = !st.ac; setBtn('b-ac', st.ac); cmd('ac', st.ac ? 'on' : 'off'); });
+  $('b-tap').addEventListener('click', function(){ st.tap = !st.tap; setBtn('b-tap', st.tap); });
+  $('b-lock').addEventListener('click', function(){
+    st.lockUntil = Date.now() + 5000; st.motionUntil = Date.now() + 6000; setBtn('b-lock', true); cmd('lock', 'open');
+  });
+  document.addEventListener('langchange', function(){ if (st.n) render(); });
+
+  step();
+  setInterval(step, 2000);
+})();
+</script>
+</body>
+</html>
