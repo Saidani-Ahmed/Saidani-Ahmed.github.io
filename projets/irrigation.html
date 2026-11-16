@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" data-title-fr="Système d'arrosage automatique connecté | Ahmed Saidani" data-title-en="Connected automatic irrigation system | Ahmed Saidani">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Système d'arrosage automatique connecté | Ahmed Saidani</title>
+<meta name="description" content="Système d'arrosage automatique : ESP32, capteur d'humidité du sol, DHT11, pompe pilotée par relais, écran LCD, MQTT, tableau de bord Node-RED et alertes de niveau d'eau.">
+<meta name="author" content="Ahmed Saidani">
+<meta property="og:title" content="Système d'arrosage automatique connecté">
+<meta property="og:description" content="ESP32, MQTT, Node-RED : un arrosage piloté par l'humidité du sol, avec alertes de niveau d'eau.">
+<meta property="og:image" content="https://saidani-ahmed.github.io/assets/img/ir-nodered-mesures.webp">
+<meta name="theme-color" content="#0b1f33">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="../index.html">ahmed<span>.saidani</span>()</a>
+    <nav aria-label="Navigation">
+      <ul>
+        <li><a href="../index.html#projets"><span lang="fr">Projets</span><span lang="en">Projects</span></a></li>
+        <li><a href="#materiel"><span lang="fr">Matériel</span><span lang="en">Hardware</span></a></li>
+        <li><a href="#firmware">Firmware</a></li>
+        <li><a href="#nodered">Node-RED</a></li>
+        <li><a href="../demo/irrigation.html"><span lang="fr">Démo</span><span lang="en">Demo</span></a></li>
+      </ul>
+    </nav>
+    <button class="lang" id="langBtn" type="button" aria-label="Changer de langue / Switch language">EN</button>
+  </div>
+</header>
+
+<main>
+  <div class="hero phead">
+    <div class="wrap">
+      <div class="crumb"><a href="../index.html#projets"><span lang="fr">Projets</span><span lang="en">Projects</span></a> / irrigation</div>
+      <span class="tag" style="margin-top:14px"><span lang="fr">// projet académique · ISTIC</span><span lang="en">// academic project · ISTIC</span></span>
+      <h1 lang="fr">Système d'arrosage automatique connecté</h1>
+      <h1 lang="en">Connected automatic irrigation system</h1>
+      <p class="lead" lang="fr">Un ESP32 mesure l'humidité du sol et déclenche la pompe seulement quand la plante en a besoin. Les mesures partent en MQTT vers un tableau de bord Node-RED, qui alerte quand le réservoir est vide.</p>
+      <p class="lead" lang="en">An ESP32 measures soil moisture and runs the pump only when the plant needs it. Measurements go over MQTT to a Node-RED dashboard, which raises an alert when the tank is empty.</p>
+      <div class="cta">
+        <a class="btn primary" href="../demo/irrigation.html"><span lang="fr">Lancer la démo interactive</span><span lang="en">Launch the interactive demo</span></a>
+        <a class="btn ghost" href="#firmware">Firmware</a>
+      </div>
+      <div class="meta">
+        <div><b lang="fr">Équipe de trois</b><b lang="en">Team of three</b><span lang="fr">avec Khalil Ktiti et Mouadh Kouki</span><span lang="en">with Khalil Ktiti and Mouadh Kouki</span></div>
+        <div><b>Scrum</b><span lang="fr">2 sprints : embarqué, puis interface</span><span lang="en">2 sprints: embedded, then interface</span></div>
+        <div><b>ESP32 · C/C++ · MQTT · Node-RED</b><span>Stack</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap two">
+      <div class="prose">
+        <div class="kicker"><span lang="fr">Le problème</span><span lang="en">The problem</span></div>
+        <h2><span lang="fr">Arroser sans gaspiller</span><span lang="en">Watering without waste</span></h2>
+        <p lang="fr">Un arrosage programmé à heure fixe arrose même quand le sol est déjà humide. L'objectif est d'adapter l'arrosage au besoin réel de la plante pour économiser l'eau.</p>
+        <p lang="en">Watering on a fixed schedule waters even when the soil is already moist. The goal is to match watering to the plant's real need in order to save water.</p>
+      </div>
+      <div class="prose">
+        <div class="kicker"><span lang="fr">La solution</span><span lang="en">The solution</span></div>
+        <h2><span lang="fr">Mesurer, décider, prévenir</span><span lang="en">Measure, decide, notify</span></h2>
+        <ul lang="fr">
+          <li>Arrosage automatique selon l'humidité du sol.</li>
+          <li>Suivi à distance sur un tableau de bord et commande manuelle de la pompe.</li>
+          <li>Affichage local sur écran LCD.</li>
+          <li>Alerte par messagerie et par e-mail quand le niveau d'eau est trop bas.</li>
+        </ul>
+        <ul lang="en">
+          <li>Automatic watering based on soil moisture.</li>
+          <li>Remote monitoring on a dashboard and manual pump control.</li>
+          <li>Local display on an LCD screen.</li>
+          <li>Chat and e-mail alert when the water level is too low.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="materiel">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Électronique</span><span lang="en">Electronics</span></div>
+      <h2><span lang="fr">Matériel et câblage</span><span lang="en">Hardware and wiring</span></h2>
+      <div class="two">
+        <table class="tbl">
+          <thead><tr><th><span lang="fr">Composant</span><span lang="en">Component</span></th><th><span lang="fr">Broche</span><span lang="en">Pin</span></th><th><span lang="fr">Rôle</span><span lang="en">Role</span></th></tr></thead>
+          <tbody>
+            <tr><td><span lang="fr">Capteur d'humidité du sol</span><span lang="en">Soil moisture sensor</span></td><td>GPIO 33</td><td><span lang="fr">Lecture analogique</span><span lang="en">Analog reading</span></td></tr>
+            <tr><td>DHT11</td><td>GPIO 25</td><td><span lang="fr">Température et humidité de l'air</span><span lang="en">Air temperature and humidity</span></td></tr>
+            <tr><td><span lang="fr">Photorésistance</span><span lang="en">Photoresistor</span></td><td>GPIO 34</td><td><span lang="fr">Luminosité</span><span lang="en">Light level</span></td></tr>
+            <tr><td><span lang="fr">Capteur de niveau d'eau</span><span lang="en">Water level sensor</span></td><td>GPIO 35</td><td><span lang="fr">Niveau du réservoir</span><span lang="en">Tank level</span></td></tr>
+            <tr><td><span lang="fr">Relais + pompe</span><span lang="en">Relay + pump</span></td><td>GPIO 13</td><td><span lang="fr">Commande de l'arrosage</span><span lang="en">Watering control</span></td></tr>
+            <tr><td><span lang="fr">LED rouge / verte</span><span lang="en">Red / green LED</span></td><td>GPIO 2 / 4</td><td><span lang="fr">État de la pompe</span><span lang="en">Pump status</span></td></tr>
+            <tr><td><span lang="fr">Bouton</span><span lang="en">Button</span></td><td>GPIO 23</td><td><span lang="fr">Entrée locale</span><span lang="en">Local input</span></td></tr>
+            <tr><td>LCD 16×2</td><td>I2C 0x27</td><td><span lang="fr">Affichage local</span><span lang="en">Local display</span></td></tr>
+          </tbody>
+        </table>
+        <figure style="margin:0">
+          <img src="../assets/img/ir-cablage.webp" alt="Schéma de câblage : ESP32, LCD, DHT, capteur d'humidité du sol, relais, LED et bouton" width="569" height="535" loading="lazy">
+          <figcaption lang="fr">Schéma de câblage du prototype.</figcaption>
+          <figcaption lang="en">Wiring diagram of the prototype.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="firmware">
+    <div class="wrap">
+      <div class="kicker">Firmware</div>
+      <h2><span lang="fr">Ce que fait l'ESP32</span><span lang="en">What the ESP32 does</span></h2>
+      <div class="two">
+        <div class="prose">
+          <ul lang="fr">
+            <li>Lit les cinq mesures : humidité du sol, température, humidité de l'air, luminosité, niveau d'eau.</li>
+            <li>Démarre la pompe quand le sol passe sous le seuil calibré, puis l'arrête quand il est assez humide.</li>
+            <li>Publie les mesures en MQTT toutes les 2 secondes et écoute un topic de commande.</li>
+            <li>Une commande manuelle force la pompe ; le système revient seul en mode automatique après 2 minutes.</li>
+            <li>Affiche les valeurs et l'état de la pompe sur l'écran LCD.</li>
+          </ul>
+          <ul lang="en">
+            <li>Reads the five measurements: soil moisture, temperature, air humidity, light level, water level.</li>
+            <li>Starts the pump when the soil drops below the calibrated threshold, then stops it once it is moist enough.</li>
+            <li>Publishes measurements over MQTT every 2 seconds and listens on a command topic.</li>
+            <li>A manual command forces the pump; the system returns to automatic mode by itself after 2 minutes.</li>
+            <li>Shows the values and the pump state on the LCD.</li>
+          </ul>
+          <div class="flow" aria-label="MQTT topics"><span>/ThinkIOT/temp</span><span>/ThinkIOT/hum</span><span>/ThinkIOT/lum</span><span>/ThinkIOT/hum_soil</span><i>→ Node-RED →</i><span>/ThinkIOT/pump</span></div>
+        </div>
+        <div>
+          <table class="tbl">
+            <thead><tr><th><span lang="fr">Problème rencontré</span><span lang="en">Problem met</span></th><th style="display:none"></th><th><span lang="fr">Solution</span><span lang="en">Fix</span></th></tr></thead>
+            <tbody>
+              <tr><td><span lang="fr">Connexion Wi-Fi instable</span><span lang="en">Unstable Wi-Fi connection</span></td><td style="display:none"></td><td><span lang="fr">Adresse IP statique pour l'ESP32</span><span lang="en">Static IP address for the ESP32</span></td></tr>
+              <tr><td><span lang="fr">Lectures DHT11 invalides (NaN)</span><span lang="en">Invalid DHT11 readings (NaN)</span></td><td style="display:none"></td><td><span lang="fr">Relecture automatique</span><span lang="en">Automatic re-read</span></td></tr>
+              <tr><td><span lang="fr">Capteur de sol peu précis</span><span lang="en">Imprecise soil sensor</span></td><td style="display:none"></td><td><span lang="fr">Recalibrage en conditions réelles</span><span lang="en">Recalibration in real conditions</span></td></tr>
+              <tr><td><span lang="fr">Tableau de bord lent</span><span lang="en">Slow dashboard</span></td><td style="display:none"></td><td><span lang="fr">Publication limitée à une fois toutes les 2 s</span><span lang="en">Publishing limited to once every 2 s</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <figure>
+        <img src="../assets/img/ir-sequence.webp" alt="Diagramme de séquence : lecture des capteurs, décision d'arrosage, configuration des seuils" width="798" height="697" loading="lazy" style="max-width:720px">
+        <figcaption lang="fr">Diagramme de séquence du système embarqué.</figcaption>
+        <figcaption lang="en">Sequence diagram of the embedded system.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section id="nodered">
+    <div class="wrap">
+      <div class="kicker"><span lang="fr">Supervision</span><span lang="en">Monitoring</span></div>
+      <h2><span lang="fr">Node-RED : tableau de bord et alertes</span><span lang="en">Node-RED: dashboard and alerts</span></h2>
+      <div class="two">
+        <figure style="margin:0">
+          <img src="../assets/img/ir-nodered-mesures.webp" alt="Flux Node-RED : topics MQTT vers jauges et graphiques, bouton de pompe manuelle" width="1079" height="730" loading="lazy">
+          <figcaption lang="fr">Chaque topic MQTT alimente une jauge et un graphique ; un bouton publie la commande de pompe.</figcaption>
+          <figcaption lang="en">Each MQTT topic feeds a gauge and a chart; a button publishes the pump command.</figcaption>
+        </figure>
+        <figure style="margin:0">
+          <img src="../assets/img/ir-nodered-alertes.webp" alt="Flux Node-RED de surveillance du niveau d'eau et d'envoi d'alertes" width="1100" height="696" loading="lazy">
+          <figcaption lang="fr">Le second flux filtre les niveaux d'eau critiques et envoie l'alerte via CallMeBot et par e-mail.</figcaption>
+          <figcaption lang="en">The second flow filters critical water levels and sends the alert through CallMeBot and e-mail.</figcaption>
+        </figure>
+      </div>
+      <div class="two" style="margin-top:28px">
+        <figure style="margin:0;max-width:300px">
+          <img src="../assets/img/ir-alertes.webp" alt="Alertes reçues : le niveau d'eau est trop bas" width="382" height="475" loading="lazy">
+          <figcaption lang="fr">Alertes reçues pendant les tests.</figcaption>
+          <figcaption lang="en">Alerts received during testing.</figcaption>
+        </figure>
+        <div class="prose">
+          <h3><span lang="fr">Pistes d'amélioration</span><span lang="en">Next steps</span></h3>
+          <ul lang="fr">
+            <li>Modules LoRa pour étendre la portée de communication.</li>
+            <li>Application mobile dédiée au suivi et au contrôle.</li>
+          </ul>
+          <ul lang="en">
+            <li>LoRa modules to extend the communication range.</li>
+            <li>A dedicated mobile app for monitoring and control.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="contact">
+        <div>
+          <h2><span lang="fr">Faites sécher le sol</span><span lang="en">Let the soil dry out</span></h2>
+          <p lang="fr">La démo reproduit la logique d'arrosage, l'écran LCD et les messages MQTT dans votre navigateur.</p>
+          <p lang="en">The demo reproduces the watering logic, the LCD and the MQTT messages in your browser.</p>
+        </div>
+        <div class="cta">
+          <a class="btn primary" href="../demo/irrigation.html"><span lang="fr">Ouvrir la démo</span><span lang="en">Open the demo</span></a>
+          <a class="btn ghost" href="../index.html#projets"><span lang="fr">Tous les projets</span><span lang="en">All projects</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>© <span id="year">2026</span> Ahmed Saidani · <a href="../index.html">saidani-ahmed.github.io</a></footer>
+<script src="../assets/site.js"></script>
+</body>
+</html>

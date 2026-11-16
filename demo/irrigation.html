@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang="fr" data-title-fr="Démo Arrosage automatique | Ahmed Saidani" data-title-en="Automatic irrigation demo | Ahmed Saidani">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Démo Arrosage automatique | Ahmed Saidani</title>
+<meta name="description" content="Démo interactive du système d'arrosage automatique : humidité du sol, pompe, écran LCD, réservoir et messages MQTT simulés dans le navigateur.">
+<meta name="theme-color" content="#0b1f33">
+<link rel="stylesheet" href="../assets/site.css">
+<link rel="stylesheet" href="../assets/demo.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="../index.html">ahmed<span>.saidani</span>()</a>
+    <nav aria-label="Navigation">
+      <ul>
+        <li><a href="../projets/irrigation.html"><span lang="fr">← Le projet Arrosage automatique</span><span lang="en">← The automatic irrigation project</span></a></li>
+      </ul>
+    </nav>
+    <button class="lang" id="langBtn" type="button" aria-label="Changer de langue / Switch language">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="top">
+    <div>
+      <span class="sim"><span lang="fr">SIMULATION — aucun matériel réel n'est connecté</span><span lang="en">SIMULATION — no real hardware is connected</span></span>
+      <h1><span lang="fr">Arrosage automatique</span><span lang="en">Automatic irrigation</span></h1>
+      <p lang="fr">Le sol sèche, l'ESP32 démarre la pompe sous le seuil, puis l'arrête quand le sol est assez humide. Changez le seuil, forcez la pompe ou videz le réservoir pour déclencher l'alerte.</p>
+      <p lang="en">The soil dries out, the ESP32 starts the pump below the threshold, then stops it once the soil is moist enough. Change the threshold, force the pump or empty the tank to trigger the alert.</p>
+    </div>
+    <div class="status"><span class="dot"></span>ESP32 · <span lang="fr">en ligne</span><span lang="en">online</span><br><span id="clock">--:--:--</span> · <span id="count">0</span> msg</div>
+  </div>
+
+  <div class="alert" id="alert" role="status"><span lang="fr">🔔 Alerte : le niveau d'eau est trop bas ! (message CallMeBot + e-mail simulés)</span><span lang="en">🔔 Alert: the water level is too low! (simulated CallMeBot message + e-mail)</span></div>
+
+  <div class="board">
+    <div class="tile"><div class="k"><span lang="fr">Humidité du sol</span><span lang="en">Soil moisture</span></div><div class="v"><span id="v-soil">--</span><small>%</small></div><div class="pin"><span lang="fr">Capteur capacitif</span><span lang="en">Capacitive sensor</span> · GPIO 33</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Pompe</span><span lang="en">Pump</span></div><div class="v" id="v-pump">--</div><div class="pin"><span lang="fr">Relais</span><span lang="en">Relay</span> · GPIO 13 · <span id="v-mode">auto</span></div></div>
+    <div class="tile"><div class="k"><span lang="fr">Réservoir</span><span lang="en">Water tank</span></div><div class="v"><span id="v-tank">--</span><small>%</small></div><div class="pin"><span lang="fr">Capteur de niveau</span><span lang="en">Level sensor</span> · GPIO 35</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Luminosité</span><span lang="en">Light level</span></div><div class="v"><span id="v-lum">--</span><small>/4095</small></div><div class="pin">LDR · GPIO 34</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Température</span><span lang="en">Temperature</span></div><div class="v"><span id="v-temp">--</span><small>°C</small></div><div class="pin">DHT11 · GPIO 25</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Humidité de l'air</span><span lang="en">Air humidity</span></div><div class="v"><span id="v-hum">--</span><small>%</small></div><div class="pin">DHT11 · GPIO 25</div></div>
+    <div class="tile"><div class="k"><span lang="fr">Eau utilisée</span><span lang="en">Water used</span></div><div class="v"><span id="v-used">0.0</span><small>L</small></div><div class="pin"><span lang="fr">estimation de la démo</span><span lang="en">demo estimate</span></div></div>
+    <div class="tile"><div class="k"><span lang="fr">Arrosages</span><span lang="en">Watering cycles</span></div><div class="v" id="v-cycles">0</div><div class="pin"><span lang="fr">depuis l'ouverture de la page</span><span lang="en">since the page opened</span></div></div>
+  </div>
+
+  <div class="row">
+    <div class="panel">
+      <h2><span lang="fr">Humidité du sol et seuil d'arrosage</span><span lang="en">Soil moisture and watering threshold</span></h2>
+      <canvas id="chart" width="900" height="300" role="img" aria-label="Soil moisture history"></canvas>
+      <div class="legend"><span><i style="background:#35d07f"></i><span lang="fr">Humidité du sol (%)</span><span lang="en">Soil moisture (%)</span></span><span><i style="background:#ffb454"></i><span lang="fr">Seuil</span><span lang="en">Threshold</span></span><span><i style="background:#6fb1ff"></i><span lang="fr">Pompe en marche</span><span lang="en">Pump running</span></span></div>
+    </div>
+    <div class="panel">
+      <h2><span lang="fr">Écran LCD 16×2 et commandes</span><span lang="en">16×2 LCD and controls</span></h2>
+      <div class="lcd" id="lcd" aria-label="LCD">
+                </div>
+      <div class="ctl"><div><b><span lang="fr">Seuil d'humidité</span><span lang="en">Moisture threshold</span></b><span class="s"><span lang="fr">la pompe démarre en dessous</span><span lang="en">the pump starts below it</span></span></div>
+        <div class="rng"><input type="range" id="thr" min="15" max="60" value="35" aria-label="Seuil / Threshold"><output id="thr-o">35%</output></div></div>
+      <div class="ctl"><div><b><span lang="fr">Pompe manuelle</span><span lang="en">Manual pump</span></b><span class="s">/ThinkIOT/pump · <span lang="fr">retour en auto après 20 s</span><span lang="en">back to auto after 20 s</span></span></div><button class="sw" id="b-pump" aria-pressed="false" type="button">OFF</button></div>
+      <div class="ctl"><div><b><span lang="fr">Plein soleil</span><span lang="en">Full sun</span></b><span class="s"><span lang="fr">le sol sèche plus vite</span><span lang="en">the soil dries faster</span></span></div><button class="sw" id="b-sun" aria-pressed="false" type="button">OFF</button></div>
+      <div class="ctl"><div><b><span lang="fr">Réservoir</span><span lang="en">Tank</span></b><span class="s"><span lang="fr">vider pour tester l'alerte</span><span lang="en">empty it to test the alert</span></span></div>
+        <div style="display:flex;gap:8px"><button class="sw" id="b-empty" type="button" style="min-width:0"><span lang="fr">Vider</span><span lang="en">Empty</span></button><button class="sw" id="b-fill" type="button" style="min-width:0"><span lang="fr">Remplir</span><span lang="en">Refill</span></button></div></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h2><span lang="fr">Messages MQTT (topics du firmware réel)</span><span lang="en">MQTT messages (topics from the real firmware)</span></h2>
+    <div class="log" id="log" aria-live="off"></div>
+  </div>
+
+  <p class="foot" lang="fr">Les valeurs sont générées par un modèle simple dans cette page. Les topics, les broches et les textes de l'écran LCD reprennent ceux du firmware ; sur le vrai système, le mode manuel dure 2 minutes. Détails sur la <a href="../projets/irrigation.html">page du projet</a>.</p>
+  <p class="foot" lang="en">Values are generated by a simple model inside this page. Topics, pins and LCD texts are taken from the firmware; on the real system, manual mode lasts 2 minutes. Details on the <a href="../projets/irrigation.html">project page</a>.</p>
+</main>
+
+<script src="../assets/site.js"></script>
+<script>
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var st = { soil: 48, temp: 24.2, hum: 55, lum: 1500, tank: 80, pump: false, manual: false, manualUntil: 0, sun: false, thr: 35, used: 0, cycles: 0, n: 0, alerted: false };
+  var hist = [];
+  var rnd = function(a){ return (Math.random() - .5) * a; };
+  var fr = function(){ return document.documentElement.getAttribute('data-lang') === 'fr'; };
+  var pad16 = function(s){ return (s + '                ').slice(0, 16); };
+
+  function log(html){
+    var el = $('log'), t = '<span class="t">' + new Date().toTimeString().slice(0,8) + '</span> ';
+    el.insertAdjacentHTML('beforeend', t + html + '\n');
+    while (el.childNodes.length > 90) el.removeChild(el.firstChild);
+    el.scrollTop = el.scrollHeight;
+  }
+  var pub = function(topic, v){ log('PUB  /ThinkIOT/' + topic + '  ' + v); };
+  var cmd = function(v){ log('<span class="cmd">SUB  /ThinkIOT/pump  ' + v + '</span>'); };
+
+  function step(){
+    var now = Date.now(), was = st.pump;
+    if (st.manual && now > st.manualUntil){ st.manual = false; setBtn('b-pump', false); }
+    // décision : manuel prioritaire, sinon seuil avec hystérésis
+    if (st.manual) st.pump = true;
+    else if (st.soil < st.thr) st.pump = true;
+    else if (st.soil > st.thr + 18) st.pump = false;
+    if (st.tank <= 0) st.pump = false;            // pas d'eau : la pompe ne tourne pas dans la démo
+    if (st.pump && !was) st.cycles++;
+
+    st.soil += st.pump ? 3.2 : -(st.sun ? 1.3 : 0.55);
+    st.soil = Math.max(3, Math.min(95, st.soil + rnd(0.3)));
+    if (st.pump){ st.tank = Math.max(0, st.tank - 2.2); st.used += 0.07; }
+    st.lum += ((st.sun ? 3500 : 1500) - st.lum) * 0.4 + rnd(50);
+    st.temp += ((st.sun ? 31 : 24) - st.temp) * 0.05 + rnd(0.1);
+    st.hum += ((st.sun ? 40 : 55) - st.hum) * 0.05 + rnd(0.4);
+    st.n++;
+
+    pub('temp', st.temp.toFixed(2)); pub('hum', st.hum.toFixed(1)); pub('lum', Math.round(st.lum)); pub('hum_soil', Math.round(st.soil));
+    var low = st.tank <= 0;
+    if (low && !st.alerted){ log('<span class="cmd">ALERT  water level = 0  → CallMeBot + e-mail</span>'); st.alerted = true; }
+    if (!low) st.alerted = false;
+    $('alert').className = 'alert' + (low ? ' show' : '');
+
+    hist.push({ s: st.soil, p: st.pump, th: st.thr }); if (hist.length > 60) hist.shift();
+    render(); draw();
+  }
+
+  function render(){
+    $('v-soil').textContent = st.soil.toFixed(0);
+    $('v-tank').textContent = st.tank.toFixed(0);
+    $('v-lum').textContent = Math.round(st.lum);
+    $('v-temp').textContent = st.temp.toFixed(1);
+    $('v-hum').textContent = st.hum.toFixed(0);
+    $('v-used').textContent = st.used.toFixed(1);
+    $('v-cycles').textContent = st.cycles;
+    var p = $('v-pump'); p.textContent = st.pump ? (fr() ? 'En marche' : 'Running') : (fr() ? 'Arrêtée' : 'Idle'); p.className = 'v ' + (st.pump ? 'on' : 'off');
+    $('v-mode').textContent = st.manual ? (fr() ? 'manuel' : 'manual') : 'auto';
+    $('lcd').textContent = st.manual
+      ? pad16('Pump: RUNNING') + '\n' + pad16('Manuel Override')
+      : (st.pump ? pad16('Pump: RUNNING') : pad16('H:' + st.hum.toFixed(1) + '% T:' + st.temp.toFixed(1) + 'C')) + '\n' + pad16('L:' + Math.round(st.lum) + ' lux');
+    $('clock').textContent = new Date().toTimeString().slice(0,8);
+    $('count').textContent = st.n * 4;
+  }
+
+  function draw(){
+    var c = $('chart'), g = c.getContext('2d'), W = c.width, H = c.height, pad = 34;
+    var X = function(i){ return pad + (W - 2 * pad) * i / 59; };
+    var Y = function(v){ return pad/2 + (H - pad) * (1 - v / 100); };
+    g.clearRect(0,0,W,H);
+    hist.forEach(function(h, i){ if (h.p){ g.fillStyle = 'rgba(111,177,255,.16)'; g.fillRect(X(i) - 7, pad/2, 14, H - pad); } });
+    g.strokeStyle = '#1e2e40'; g.lineWidth = 1; g.fillStyle = '#5d7389'; g.font = '11px monospace'; g.textAlign = 'right';
+    for (var k = 0; k <= 4; k++){ var y = Y(100 - k * 25); g.beginPath(); g.moveTo(pad, y); g.lineTo(W - pad, y); g.stroke(); g.fillText((100 - k * 25) + '%', pad - 6, y + 4); }
+    function line(key, color, dash){
+      if (hist.length < 2) return;
+      g.beginPath(); g.setLineDash(dash || []); g.strokeStyle = color; g.lineWidth = 2.5; g.lineJoin = 'round';
+      hist.forEach(function(h, i){ if (i) g.lineTo(X(i), Y(h[key])); else g.moveTo(X(i), Y(h[key])); });
+      g.stroke(); g.setLineDash([]);
+    }
+    line('th', '#ffb454', [6, 5]);
+    line('s', '#35d07f');
+  }
+
+  function setBtn(id, on){ var b = $(id); b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.textContent = on ? 'ON' : 'OFF'; }
+  $('b-pump').addEventListener('click', function(){
+    st.manual = !st.manual; st.manualUntil = Date.now() + 20000; setBtn('b-pump', st.manual); cmd(st.manual ? '1' : '0');
+    if (!st.manual) st.pump = false;
+  });
+  $('b-sun').addEventListener('click', function(){ st.sun = !st.sun; setBtn('b-sun', st.sun); });
+  $('b-empty').addEventListener('click', function(){ st.tank = 0; });
+  $('b-fill').addEventListener('click', function(){ st.tank = 100; });
+  $('thr').addEventListener('input', function(){ st.thr = +this.value; $('thr-o').textContent = st.thr + '%'; });
+  document.addEventListener('langchange', function(){ if (st.n) render(); });
+
+  step();
+  setInterval(step, 2000);
+})();
+</script>
+</body>
+</html>
